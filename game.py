@@ -27,24 +27,28 @@ class Game:
         score = font.render(f"Счёт: {self.snake.length}", True, (0, 0, 0))
         self.screen.blit(score, (15, 15))
 
-    def eat_apple(self):
+    def check_if_eat_apple(self):
         if self.is_contact(self.snake.x[0], self.snake.y[0], self.apple.x, self.apple.y):
             self.snake.increase_length()
             self.apple.move()
 
-    def eat_snake(self):
+    def check_if_eat_snake(self):
         for i in range(3, self.snake.length):
             if self.is_contact(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]):
-                raise "Game over"
+                raise "Ate myself"
 
+    def check_if_eat_border(self):
+        if not (0 <= self.snake.x[0] < 800 and 0 <= self.snake.y[0] < 800):
+            raise "Ate border"
 
     def game_on(self):
         self.snake.go()
         self.apple.draw()
         self.show_score()
         pygame.display.update()
-        self.eat_apple()
-        self.eat_snake()
+        self.check_if_eat_apple()
+        self.check_if_eat_snake()
+        self.check_if_eat_border()
 
     def run(self):
         running = True
@@ -86,7 +90,7 @@ class Game:
                 pause = True
                 self.reset()
 
-            time.sleep(0.1)
+            time.sleep(0.5)
         else:
             self.game_over()
 

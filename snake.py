@@ -8,14 +8,13 @@ class Snake:
         self.length = length
         self.body = pygame.image.load("images/body.jpg").convert()
         self.direction = "right"
-        self.x = [SQUARE] * length
-        self.y = [SQUARE] * length
+        self.x = [0] * length
+        self.y = [0] * length
 
     def draw(self):
         self.screen.fill((50, 240, 200))
         for i in range(self.length):
             self.screen.blit(self.body, (self.x[i], self.y[i]))
-        pygame.display.update()
 
     def increase_length(self):
         self.x.append(self.length)
