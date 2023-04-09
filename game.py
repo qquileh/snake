@@ -59,6 +59,9 @@ class Game:
                     if event.key == K_SPACE:
                         pause = False
 
+                    elif event.key == K_p:
+                        pause = True
+
                     elif event.key == K_q:
                         running = False
 
