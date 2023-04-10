@@ -5,6 +5,8 @@ from apple import Apple
 from pygame.locals import *
 
 SQUARE = 40
+LOSE_BACKGROUND = (255, 0, 0)
+BACKGROUND = (50, 240, 200)
 
 
 class Game:
@@ -12,7 +14,7 @@ class Game:
         pygame.init()
         self.screen = pygame.display.set_mode((800, 800))
         pygame.display.set_caption("Snake")
-        self.screen.fill((10, 200, 50))
+        self.screen.fill(BACKGROUND)
         self.snake = Snake(self.screen, 1)
         self.snake.draw()
         self.apple = Apple(self.screen)
@@ -59,7 +61,7 @@ class Game:
                     if event.key == K_SPACE:
                         pause = False
 
-                    elif event.key == K_p:
+                    elif event.key == K_ESCAPE:
                         pause = True
 
                     elif event.key == K_q:
@@ -105,7 +107,7 @@ class Game:
         return False
 
     def game_over(self):
-        self.screen.fill((10, 200, 50))
+        self.screen.fill(LOSE_BACKGROUND)
         font = pygame.font.SysFont('calibri', 30)
         game_over = font.render(f"Игра окончена. Ваш счёт: {self.snake.length}", True, (0, 0, 0))
         self.screen.blit(game_over, (300, 400))

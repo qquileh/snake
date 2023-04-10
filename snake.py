@@ -1,6 +1,7 @@
 import pygame
 
 SQUARE = 40
+BACKGROUND = (50, 240, 200)
 
 class Snake:
     def __init__(self, screen, length):
@@ -12,7 +13,7 @@ class Snake:
         self.y = [0] * length
 
     def draw(self):
-        self.screen.fill((50, 240, 200))
+        self.screen.fill(BACKGROUND)
         for i in range(self.length):
             self.screen.blit(self.body, (self.x[i], self.y[i]))
 
