@@ -47,11 +47,11 @@ class Game:
 
     def game_on(self):
         self.snake.go()
-        self.apple.draw()
-        self.show_score()
         self.check_if_eat_apple()
         self.check_if_eat_snake()
         self.check_if_eat_border()
+        self.apple.draw()
+        self.show_score()
 
     def run(self):
         running = True
