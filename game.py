@@ -7,12 +7,13 @@ from pygame.locals import KEYDOWN, K_SPACE, K_ESCAPE, K_q, K_UP, K_DOWN, K_RIGHT
 SQUARE = 40
 LOSE_BACKGROUND = (255, 0, 0)
 BACKGROUND = (50, 240, 200)
+FIELD_SIZE = 800
 
 
 class Game:
     def __init__(self):
         pygame.init()
-        self.screen = pygame.display.set_mode((800, 800))
+        self.screen = pygame.display.set_mode((FIELD_SIZE, FIELD_SIZE))
         pygame.display.set_caption("Snake")
         self.screen.fill(BACKGROUND)
         self.snake = Snake(self.screen, 1)
@@ -28,6 +29,7 @@ class Game:
         font = pygame.font.SysFont('calibri', 20)
         score = font.render(f"Счёт: {self.snake.length}", True, (0, 0, 0))
         self.screen.blit(score, (15, 15))
+        pygame.display.update()
 
     def check_if_eat_apple(self):
         if self.is_contact(self.snake.x[0], self.snake.y[0], self.apple.x, self.apple.y):
@@ -35,19 +37,18 @@ class Game:
             self.apple.move()
 
     def check_if_eat_snake(self):
-        for i in range(3, self.snake.length):
+        for i in range(1, self.snake.length):
             if self.is_contact(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]):
                 raise "Ate myself"
 
     def check_if_eat_border(self):
-        if not (0 <= self.snake.x[0] < 800 and 0 <= self.snake.y[0] < 800):
+        if not (0 <= self.snake.x[0] < FIELD_SIZE and 0 <= self.snake.y[0] < FIELD_SIZE):
             raise "Ate border"
 
     def game_on(self):
         self.snake.go()
         self.apple.draw()
         self.show_score()
-        pygame.display.update()
         self.check_if_eat_apple()
         self.check_if_eat_snake()
         self.check_if_eat_border()
