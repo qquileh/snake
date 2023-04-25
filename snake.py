@@ -16,6 +16,7 @@ class Snake:
         self.screen.fill(BACKGROUND)
         for i in range(self.length):
             self.screen.blit(self.body, (self.x[i], self.y[i]))
+        pygame.display.update()
 
     def increase_length(self):
         self.x.append(self.length)
