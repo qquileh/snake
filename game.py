@@ -2,29 +2,39 @@ import pygame
 import time
 from snake import Snake
 from apple import Apple
-from pygame.locals import KEYDOWN, K_SPACE, K_ESCAPE, K_q, K_UP, K_DOWN, K_RIGHT, K_LEFT, QUIT
+from pygame.locals import KEYDOWN, K_SPACE, K_ESCAPE, K_UP, K_DOWN, K_RIGHT, K_LEFT, QUIT, K_1, K_2, K_3, K_m
 
 SQUARE = 40
 LOSE_BACKGROUND = (255, 0, 0)
 BACKGROUND = (50, 240, 200)
-FIELD_SIZE = 800
+SCREEN_SIZE = 800
 DEFAULT_SPEED = 0.4
 
 
 class Game:
     def __init__(self):
+        self.NUM_OF_SQUARES = 20
         self.speed = DEFAULT_SPEED
         self.start_time = time.time()
         pygame.init()
-        self.screen = pygame.display.set_mode((FIELD_SIZE, FIELD_SIZE))
+        self.screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
         pygame.display.set_caption("Snake")
+        self.game_menu()
+        self.snake = Snake(self.screen, length=1)
+        self.apple = Apple(self.screen, NUM_OF_SQUARES=self.NUM_OF_SQUARES)
+    
+    def game_menu(self):
         self.screen.fill(BACKGROUND)
-        self.snake = Snake(self.screen, 1)
-        self.apple = Apple(self.screen)
+        font = pygame.font.SysFont('calibri', 30)
+        menu_message_1 = font.render("Выберите уровень, нажав 1, 2 или 3 на клавиатуре", True, (0, 0, 0))
+        self.screen.blit(menu_message_1, (15, 40))
+        menu_message_2 = font.render("Затем нажмите на пробел для начала", True, (0, 0, 0))
+        self.screen.blit(menu_message_2, (15, 80))
+        pygame.display.update()
 
     def reset(self):
         self.snake = Snake(self.screen, 1)
-        self.apple = Apple(self.screen)
+        self.apple = Apple(self.screen, NUM_OF_SQUARES=self.NUM_OF_SQUARES)
         self.speed = DEFAULT_SPEED
 
     def show_score(self):
@@ -44,6 +54,7 @@ class Game:
                 raise BaseException
 
     def check_if_eat_border(self):
+        FIELD_SIZE = self.NUM_OF_SQUARES * SQUARE
         if not (0 <= self.snake.x[0] < FIELD_SIZE and 0 <= self.snake.y[0] < FIELD_SIZE):
             raise BaseException
 
@@ -65,18 +76,18 @@ class Game:
 
     def run(self):
         running = True
-        pause = False
+        pause = True
         while running:
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     if event.key == K_SPACE:
                         pause = False
 
+                    elif event.key == K_m:
+                        self.game_menu()
+
                     elif event.key == K_ESCAPE:
                         pause = True
-
-                    elif event.key == K_q:
-                        running = False
 
                     elif event.key == K_UP:
                         if self.snake.direction == "left" or self.snake.direction == "right":
@@ -93,6 +104,17 @@ class Game:
                     elif event.key == K_RIGHT:
                         if self.snake.direction == "up" or self.snake.direction == "down":
                             self.snake.move_right()
+
+                    elif event.key == K_1:
+                        self.NUM_OF_SQUARES = 20
+
+                    elif event.key == K_2:
+                        self.NUM_OF_SQUARES = 18
+
+                    elif event.key == K_3:
+                        self.NUM_OF_SQUARES = 16
+
+
 
                 elif event.type == QUIT:
                     running = False
@@ -123,6 +145,6 @@ class Game:
         font = pygame.font.SysFont('calibri', 30)
         game_over = font.render(f"Игра окончена. Ваш счёт: {self.snake.length}", True, (0, 0, 0))
         self.screen.blit(game_over, (15, 40))
-        play_again = font.render("Нажмите 'пробел', чтобы играть снова", True, (0, 0, 0))
+        play_again = font.render("Нажмите 'm', чтобы выбрать уровень и играть снова", True, (0, 0, 0))
         self.screen.blit(play_again, (15, 80))
         pygame.display.update()
