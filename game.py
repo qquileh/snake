@@ -61,8 +61,8 @@ class Game:
     def update_speed(self):
         current_time = time.time()
         dif = current_time - self.start_time
-        if dif > 3:
-            self.speed /= 1.5
+        if dif > 5:
+            self.speed /= 1.2
             self.start_time = current_time
 
     def game_on(self):
