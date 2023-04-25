@@ -8,10 +8,13 @@ SQUARE = 40
 LOSE_BACKGROUND = (255, 0, 0)
 BACKGROUND = (50, 240, 200)
 FIELD_SIZE = 800
+DEFAULT_SPEED = 0.4
 
 
 class Game:
     def __init__(self):
+        self.speed = DEFAULT_SPEED
+        self.start_time = time.time()
         pygame.init()
         self.screen = pygame.display.set_mode((FIELD_SIZE, FIELD_SIZE))
         pygame.display.set_caption("Snake")
@@ -24,6 +27,7 @@ class Game:
     def reset(self):
         self.snake = Snake(self.screen, 1)
         self.apple = Apple(self.screen)
+        self.speed = DEFAULT_SPEED
 
     def show_score(self):
         font = pygame.font.SysFont('calibri', 20)
@@ -39,13 +43,21 @@ class Game:
     def check_if_eat_snake(self):
         for i in range(1, self.snake.length):
             if self.is_contact(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]):
-                raise "Ate myself"
+                raise BaseException
 
     def check_if_eat_border(self):
         if not (0 <= self.snake.x[0] < FIELD_SIZE and 0 <= self.snake.y[0] < FIELD_SIZE):
-            raise "Ate border"
+            raise BaseException
+
+    def update_speed(self):
+        current_time = time.time()
+        dif = current_time - self.start_time
+        if dif > 3:
+            self.speed /= 1.5
+            self.start_time = current_time
 
     def game_on(self):
+        self.update_speed()
         self.snake.go()
         self.check_if_eat_apple()
         self.check_if_eat_snake()
@@ -91,12 +103,12 @@ class Game:
                 if not pause:
                     self.game_on()
 
-            except Exception:
+            except BaseException:
                 self.game_over()
                 pause = True
                 self.reset()
 
-            time.sleep(0.2)
+            time.sleep(self.speed)
         else:
             self.game_over()
 
@@ -110,7 +122,7 @@ class Game:
         self.screen.fill(LOSE_BACKGROUND)
         font = pygame.font.SysFont('calibri', 30)
         game_over = font.render(f"Игра окончена. Ваш счёт: {self.snake.length}", True, (0, 0, 0))
-        self.screen.blit(game_over, (300, 400))
+        self.screen.blit(game_over, (15, 40))
         play_again = font.render("Нажмите 'пробел', чтобы играть снова", True, (0, 0, 0))
-        self.screen.blit(play_again, (300, 440))
+        self.screen.blit(play_again, (15, 80))
         pygame.display.update()
