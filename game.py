@@ -22,7 +22,7 @@ class Game:
         self.game_menu()
         self.snake = Snake(self.screen, length=1)
         self.apple = Apple(self.screen, NUM_OF_SQUARES=self.NUM_OF_SQUARES)
-    
+
     def game_menu(self):
         self.screen.fill(BACKGROUND)
         font = pygame.font.SysFont('calibri', 30)
@@ -54,8 +54,8 @@ class Game:
                 raise BaseException
 
     def check_if_eat_border(self):
-        FIELD_SIZE = self.NUM_OF_SQUARES * SQUARE
-        if not (0 <= self.snake.x[0] < FIELD_SIZE and 0 <= self.snake.y[0] < FIELD_SIZE):
+        field_size = self.NUM_OF_SQUARES * SQUARE
+        if not (0 <= self.snake.x[0] < field_size and 0 <= self.snake.y[0] < field_size):
             raise BaseException
 
     def update_speed(self):
@@ -113,8 +113,6 @@ class Game:
 
                     elif event.key == K_3:
                         self.NUM_OF_SQUARES = 16
-
-
 
                 elif event.type == QUIT:
                     running = False
