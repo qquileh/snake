@@ -20,9 +20,7 @@ class Game:
         pygame.display.set_caption("Snake")
         self.screen.fill(BACKGROUND)
         self.snake = Snake(self.screen, 1)
-        self.snake.draw()
         self.apple = Apple(self.screen)
-        self.apple.draw()
 
     def reset(self):
         self.snake = Snake(self.screen, 1)
@@ -102,6 +100,8 @@ class Game:
             try:
                 if not pause:
                     self.game_on()
+                else:
+                    self.start_time = time.time()
 
             except BaseException:
                 self.game_over()
