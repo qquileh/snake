@@ -2,7 +2,7 @@ import pygame
 import time
 from snake import Snake
 from apple import Apple
-from pygame.locals import *
+from pygame.locals import KEYDOWN, K_SPACE, K_ESCAPE, K_q, K_UP, K_DOWN, K_RIGHT, K_LEFT, QUIT
 
 SQUARE = 40
 LOSE_BACKGROUND = (255, 0, 0)
@@ -95,10 +95,9 @@ class Game:
                 pause = True
                 self.reset()
 
-            time.sleep(0.5)
+            time.sleep(0.2)
         else:
             self.game_over()
-
 
     def is_contact(self, x_1, y_1, x_2, y_2):
         if x_1 == x_2:
