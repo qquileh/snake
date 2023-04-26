@@ -21,20 +21,24 @@ class Game:
         pygame.display.set_caption("Snake")
         self.screen.fill(BACKGROUND)
         self.num_of_squares = 19
+        self.level = 1
         self.snake = Snake(self.screen, length=1)
         self.apple = Apple(self.screen, num_of_squares=self.num_of_squares)
         self.field = Field(self.screen, num_of_squares=self.num_of_squares)
         self.speed = DEFAULT_SPEED
+        self.attempt = 0
         pygame.display.update()
         self.game_menu()
 
-    def reset(self, num):
+    def reset(self, num, lvl):
         self.screen.fill(BACKGROUND)
         self.num_of_squares = num
+        self.level = lvl
         self.snake = Snake(self.screen, length=1)
         self.apple = Apple(self.screen, num_of_squares=self.num_of_squares)
         self.field = Field(self.screen, num_of_squares=self.num_of_squares)
         self.speed = DEFAULT_SPEED
+        self.attempt += 1
         pygame.display.update()
 
     def game_menu(self):
@@ -114,15 +118,15 @@ class Game:
                             self.snake.move_right()
 
                     elif event.key == K_1:
-                        self.reset(19)
+                        self.reset(19, 1)
                         pause = False
 
                     elif event.key == K_2:
-                        self.reset(17)
+                        self.reset(17, 2)
                         pause = False
 
                     elif event.key == K_3:
-                        self.reset(15)
+                        self.reset(15, 3)
                         pause = False
 
                 elif event.type == QUIT:
@@ -140,7 +144,12 @@ class Game:
 
             time.sleep(self.speed)
         else:
-            self.game_over()
+            self.clear_results()
+
+    def clear_results(self):
+        for i in range(1, 4):
+            with open(f'records_{i}.txt', 'w') as f:
+                continue
 
     def is_contact(self, x_1, y_1, x_2, y_2):
         if x_1 == x_2:
@@ -148,11 +157,27 @@ class Game:
                 return True
         return False
 
+    def update_records(self):
+        attempts = [(f"attempt#{self.attempt}:", self.snake.length)]
+        with open(f'records_{self.level}.txt') as f:
+            lines = f.readlines()
+            for i in lines:
+                attempts.append((i.split()[0], int(i.split()[1])))
+        attempts.sort(key=lambda x: x[1], reverse=True)
+
+        l = len(attempts)
+        with open(f'records_{self.level}.txt', 'w') as f:
+            for i in range(l):
+                f.write(f"{attempts[i][0]} {attempts[i][1]}\n")
+
     def game_over(self):
+        self.update_records()
         self.screen.fill(LOSE_BACKGROUND)
         font = pygame.font.SysFont('calibri', 30)
-        game_over = font.render(f"Игра окончена. Ваш счёт: {self.snake.length}", True, (0, 0, 0))
-        self.screen.blit(game_over, (15, 40))
+        your_score = font.render(f"Игра окончена. Ваш счёт: {self.snake.length}", True, (0, 0, 0))
+        self.screen.blit(your_score, (15, 40))
+        your_attempt = font.render(f"Ваша попытка: attempt#{self.attempt}", True, (0, 0, 0))
+        self.screen.blit(your_attempt, (15, 80))
         play_again = font.render("Нажмите 'm', чтобы выбрать уровень и играть снова", True, (0, 0, 0))
-        self.screen.blit(play_again, (15, 80))
+        self.screen.blit(play_again, (15, 120))
         pygame.display.update()
