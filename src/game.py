@@ -31,7 +31,7 @@ class Game:
         self.game_menu()
 
     def get_attempt(self):
-        with open('number_of_attempts.txt') as f:
+        with open('data/number_of_attempts.txt') as f:
             attempt = int(f.read())
             return attempt
 
@@ -153,17 +153,6 @@ class Game:
                 pause = True
 
             time.sleep(self.speed)
-        '''
-        else:
-            self.clear_results()
-        '''
-
-    '''
-    def clear_results(self):
-        for i in range(1, 4):
-            with open(f'records_{i}.txt', 'w'):
-                continue
-    '''
 
     def is_contact(self, x_1, y_1, x_2, y_2):
         if x_1 == x_2:
@@ -174,22 +163,25 @@ class Game:
     def show_records(self):
         self.screen.fill(BACKGROUND)
         font = pygame.font.SysFont('calibri', 30)
-        coordinate_attempt = 70
         coordinate_level = 40
+        coordinate_attempt = coordinate_level + 30
         for i in range(3):
             message = font.render(f"Рекорды уровня {i + 1}", True, (0, 0, 0))
             self.screen.blit(message, (15, coordinate_level))
-            with open(f'records_{i + 1}.txt') as f:
-                lines = f.readlines()
-                lines = [line.rstrip() for line in lines]
-                to_print = 5
-                length = len(lines)
-                if length < to_print:
-                    to_print = length
-                for i in range(to_print):
-                    message = font.render(lines[i], True, (0, 0, 0))
-                    self.screen.blit(message, (15, coordinate_attempt))
-                    coordinate_attempt += 30
+            try:
+                with open(f'data/records_{i + 1}.txt') as f:
+                    lines = f.readlines()
+                    lines = [line.rstrip() for line in lines]
+                    to_print = 5
+                    length = len(lines)
+                    if length < to_print:
+                        to_print = length
+                    for i in range(to_print):
+                        message = font.render(lines[i], True, (0, 0, 0))
+                        self.screen.blit(message, (15, coordinate_attempt))
+                        coordinate_attempt += 30
+            except BaseException:
+                pass
             coordinate_level += 240
             coordinate_attempt = coordinate_level + 30
         message = font.render("Нажмите 'm', чтобы выйти в меню", True, (0, 0, 0))
@@ -198,19 +190,23 @@ class Game:
 
     def update_records(self):
         attempts = [(f"attempt#{self.attempt}:", self.snake.length)]
-        with open(f'records_{self.level}.txt') as f:
-            lines = f.readlines()
-            for i in lines:
-                attempts.append((i.split()[0], int(i.split()[1])))
-        attempts.sort(key=lambda x: x[1], reverse=True)
+        try:
+            with open(f'data/records_{self.level}.txt') as f:
+                lines = f.readlines()
+                for i in lines:
+                    attempts.append((i.split()[0], int(i.split()[1])))
+            attempts.sort(key=lambda x: x[1], reverse=True)
+
+        except BaseException:
+            pass
 
         length = len(attempts)
-        with open(f'records_{self.level}.txt', 'w') as f:
+        with open(f'data/records_{self.level}.txt', 'w') as f:
             for i in range(length):
                 f.write(f"{attempts[i][0]} {attempts[i][1]}\n")
 
     def update_attempts(self):
-        with open('number_of_attempts.txt', 'w') as f:
+        with open('data/number_of_attempts.txt', 'w') as f:
             f.write(str(self.attempt))
 
     def game_over(self):
